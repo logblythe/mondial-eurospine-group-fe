@@ -1,38 +1,34 @@
 import { Customer, GroupMember, Person } from "@/type/group-type";
 
 type Props = {
-  selectedGroupMembers: string[];
   customers: Customer[];
-  groupMembers: GroupMember[];
+  selectedGroupMembers: GroupMember[];
 };
 
 export const categorizeData = ({
-  selectedGroupMembers,
   customers,
-  groupMembers,
+  selectedGroupMembers = [],
 }: Props) => {
   const noEurospineAccount: Person[] = [];
   const eurospineAccountWithoutParticipation: Person[] = [];
   const eurospineAccountWithParticipation: Person[] = [];
 
-  for (const email of selectedGroupMembers) {
-    if (!email) {
+  for (const member of selectedGroupMembers) {
+    if (!member.primaryEmail) {
+      noEurospineAccount.push({
+        eventsAir: member,
+      });
       continue;
     }
 
     const customer = customers.find(
-      (customer) => customer.primaryEmail === email
-    );
-    const selectedGroupMember = groupMembers.find(
-      (member) => member.primaryEmail === email
+      (customer) => customer.primaryEmail === member.primaryEmail
     );
 
     if (!customer) {
-      if (selectedGroupMember) {
-        noEurospineAccount.push({
-          eventsAir: selectedGroupMember,
-        });
-      }
+      noEurospineAccount.push({
+        eventsAir: member,
+      });
       continue;
     }
 
@@ -40,16 +36,52 @@ export const categorizeData = ({
 
     if (!participation || participation.checkboxAccepted !== "1") {
       eurospineAccountWithoutParticipation.push({
-        eventsAir: selectedGroupMember,
+        eventsAir: member,
         eurospine: customer,
       });
     } else {
       eurospineAccountWithParticipation.push({
-        eventsAir: selectedGroupMember,
+        eventsAir: member,
         eurospine: customer,
       });
     }
   }
+
+  // for (const email of selectedGroupMembers) {
+  //   if (!email) {
+  //     continue;
+  //   }
+
+  //   const customer = customers.find(
+  //     (customer) => customer.primaryEmail === email
+  //   );
+  //   const selectedGroupMember = groupMembers.find(
+  //     (member) => member.primaryEmail === email
+  //   );
+
+  //   if (!customer) {
+  //     if (selectedGroupMember) {
+  //       noEurospineAccount.push({
+  //         eventsAir: selectedGroupMember,
+  //       });
+  //     }
+  //     continue;
+  //   }
+
+  //   const { participation } = customer;
+
+  //   if (!participation || participation.checkboxAccepted !== "1") {
+  //     eurospineAccountWithoutParticipation.push({
+  //       eventsAir: selectedGroupMember,
+  //       eurospine: customer,
+  //     });
+  //   } else {
+  //     eurospineAccountWithParticipation.push({
+  //       eventsAir: selectedGroupMember,
+  //       eurospine: customer,
+  //     });
+  //   }
+  // }
 
   return {
     noEurospineAccount,

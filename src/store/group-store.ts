@@ -1,4 +1,4 @@
-import { GroupType } from "@/type/group-type";
+import { GroupMember, GroupType } from "@/type/group-type";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -6,8 +6,8 @@ interface GroupState {
   selectedGroupId?: string;
   selectedGroup?: GroupType;
   selectGroup: (eventId: GroupType) => void;
-  selectedGroupMembers?: string[];
-  setSelectedGroupMembers: (members: string[]) => void;
+  selectedGroupMembers?: GroupMember[];
+  setSelectedGroupMembers: (members: GroupMember[]) => void;
 }
 
 export const useGroupStore = create<GroupState, any>(

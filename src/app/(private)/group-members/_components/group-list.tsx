@@ -50,11 +50,11 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
             const selectedRows = Object.keys(rowSelection).filter(
               (key) => rowSelection[key]
             );
-            const selectedEmails = selectedRows.map((row) => {
+            const selectedGroupMembers = selectedRows.map((row) => {
               const index = parseInt(row);
-              return groupMembersQuery.data?.[index].primaryEmail ?? "";
+              return groupMembersQuery.data![index];
             });
-            setSelectedGroupMembers(selectedEmails);
+            setSelectedGroupMembers(selectedGroupMembers);
             router.push(
               `/group-members-comparison?groupId=${groupId}&tab=no_eurospine_account`
             );

@@ -19,6 +19,9 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
   const router = useRouter();
 
   const { selectedGroupMembers = [] } = useGroupStore();
+  const selectedEmails = selectedGroupMembers.map(
+    (member) => member.primaryEmail
+  );
 
   const searchParams = useSearchParams();
 
@@ -41,20 +44,16 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
 
   const participationQuery = useQuery({
     queryKey: ["groups", groupId, "participation"],
-    queryFn: () => apiClient.getGroupCustomer(selectedGroupMembers),
+    queryFn: () => apiClient.getGroupCustomer(selectedEmails),
     enabled: selectedGroupMembers.length > 0,
   });
 
   useEffect(() => {
     if (participationQuery.isSuccess && groupMembersQuery.isSuccess) {
-      const groupMembers = groupMembersQuery.data?.filter((member) =>
-        selectedGroupMembers.includes(member.primaryEmail)
-      );
       const customers = participationQuery.data ?? [];
       const categorizedData = categorizeData({
-        selectedGroupMembers,
         customers,
-        groupMembers,
+        selectedGroupMembers,
       });
       setData(categorizedData);
     }
