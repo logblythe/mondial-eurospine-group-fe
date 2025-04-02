@@ -7,7 +7,7 @@ import { useGroupStore } from "@/store/group-store";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { columns } from "./columns";
 
 const apiClient = new ApiClient();
@@ -15,7 +15,8 @@ const apiClient = new ApiClient();
 const GroupMembersList = ({ groupId }: { groupId: string }) => {
   const router = useRouter();
 
-  const { setSelectedGroupMembers } = useGroupStore();
+  const { setSelectedGroupMembers, selectedGroupMembers = [] } =
+    useGroupStore();
 
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
@@ -23,6 +24,18 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
     queryKey: ["groups", groupId, "members"],
     queryFn: () => apiClient.getGroupMembers(groupId),
   });
+
+  useEffect(() => {
+    if (selectedGroupMembers.length === 0) return;
+    const rowSelection: Record<string, boolean> = {};
+    selectedGroupMembers.forEach((selectedMember) => {
+      const index = groupMembersQuery.data?.findIndex(
+        (member) => member.internalNumber === selectedMember.internalNumber
+      ) as number;
+      rowSelection[index] = true;
+    });
+    setRowSelection(rowSelection);
+  }, [groupMembersQuery.data, selectedGroupMembers]);
 
   return (
     <div className="container mx-auto py-10 space-y-2">

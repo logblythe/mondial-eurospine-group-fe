@@ -14,7 +14,10 @@ export const categorizeData = ({
   const eurospineAccountWithParticipation: Person[] = [];
 
   for (const member of selectedGroupMembers) {
-    if (!member.primaryEmail) {
+    if (!member) {
+      continue;
+    }
+    if (!member?.primaryEmail) {
       noEurospineAccount.push({
         eventsAir: member,
       });

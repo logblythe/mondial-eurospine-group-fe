@@ -2,7 +2,7 @@ import ApiClient from "@/api-client/";
 import { dehydrate } from "@tanstack/query-core";
 import { HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { Metadata } from "next";
-import GroupMembersList from "./_components/group-list";
+import GroupMembersList from "./_components/group-member-list";
 
 const apiClient = new ApiClient();
 
