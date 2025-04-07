@@ -52,7 +52,7 @@ export const columns: ColumnDef<Person>[] = [
     id: "eurospine",
     header: () => <span>Eurospine</span>,
     columns: [
-      columnHelper.accessor((row) => row.eurospine?.participation.mondialId, {
+      columnHelper.accessor((row) => row.eurospine?.participation?.mondialId, {
         id: "eurospine.id",
         cell: (info) => info.getValue(),
         header: () => <span>Id</span>,
