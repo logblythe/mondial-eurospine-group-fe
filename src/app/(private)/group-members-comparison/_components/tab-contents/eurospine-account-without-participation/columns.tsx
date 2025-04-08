@@ -4,7 +4,7 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
 const columnHelper = createColumnHelper<Person>();
 
-const columns: ColumnDef<Person>[] = [
+export const columns: ColumnDef<Person>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -24,8 +24,8 @@ const columns: ColumnDef<Person>[] = [
     id: "eventsAir",
     header: () => <span>EventsAir</span>,
     columns: [
-      columnHelper.accessor((row) => row.eventsAir?.id, {
-        id: "eventsAir.id",
+      columnHelper.accessor((row) => row.eventsAir?.internalNumber, {
+        id: "eventsAir.internalNumber",
         cell: (info) => info.getValue(),
         header: () => <span>Id</span>,
       }),

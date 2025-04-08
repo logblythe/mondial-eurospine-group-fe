@@ -12,7 +12,7 @@ import { flexRender, useReactTable } from "@tanstack/react-table";
 import { getCoreRowModel } from "@tanstack/table-core";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { columns } from "../eurospine-account-with-participation/columns";
+import { columns } from "./columns";
 // import { columns } from "./columns";
 
 type Props = {
