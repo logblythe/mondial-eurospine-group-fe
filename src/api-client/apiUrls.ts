@@ -4,5 +4,7 @@ export const apiUrls = {
   },
   groups: {
     get: "/groups",
+    sync: "/groups/sync/:id",
+    syncStatus: "/groups/sync/:id/status",
   },
 };

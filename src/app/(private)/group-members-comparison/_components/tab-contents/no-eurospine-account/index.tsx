@@ -1,27 +1,37 @@
+import ApiClient from "@/api-client";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
+import { useGroupStore } from "@/store/group-store";
 import { Person } from "@/type/group-type";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { z } from "zod";
 import { columns } from "./columns";
-
-const FormSchema = z.object({
-  fromDate: z.string(),
-});
-
-type FormValues = z.infer<typeof FormSchema>;
 
 type Props = {
   data: Person[];
-  isLoading: boolean;
-  onSubmit: (values: FormValues) => void;
+  onSubmit: (rowSelection: Record<string, boolean>) => void;
 };
 
+const apiClient = new ApiClient();
+
 export const NoEurospineAccountView = (props: Props) => {
-  const { isLoading, onSubmit, data = [] } = props;
+  const { onSubmit, data = [] } = props;
 
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+
+  const { selectedGroupId } = useGroupStore();
+
+  const groupSyncQuery = useQuery({
+    queryKey: ["groups", selectedGroupId, "status"],
+    queryFn: () => apiClient.getSyncStatus(selectedGroupId!),
+    enabled: !!selectedGroupId,
+    refetchInterval: 5000,
+  });
+
+  const status = groupSyncQuery?.data?.GroupCatA;
+
+  const handleClick = () => onSubmit(rowSelection);
 
   return (
     <div className="flex flex-col space-y-4">
@@ -33,9 +43,11 @@ export const NoEurospineAccountView = (props: Props) => {
         enableMultiRowSelection
       />
       <div className="flex flex-row justify-end w-full px-2">
-        <Button disabled={isLoading}>
-          {isLoading ? <Loader2 className="w-4 h-4 animate-spin mr-4" /> : null}
-          Sync
+        <Button disabled={status === "IN_PROGRESS"} onClick={handleClick}>
+          {status === "IN_PROGRESS" ? (
+            <Loader2 className="w-4 h-4 animate-spin mr-4" />
+          ) : null}
+          {status === "IN_PROGRESS" ? "Syncing..." : "Sync"}
         </Button>
       </div>
     </div>

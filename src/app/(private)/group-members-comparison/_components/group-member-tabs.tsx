@@ -1,11 +1,12 @@
 "use client";
 
-import ApiClient from "@/api-client/";
+import ApiClient, { SyncGroupPayload } from "@/api-client/";
 import { categorizeData } from "@/app/(private)/group-members-comparison/categorize-data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGroupStore } from "@/store/group-store";
+import { GroupCategory } from "@/type/group-category";
 import { Person } from "@/type/group-type";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,7 +19,8 @@ const apiClient = new ApiClient();
 const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
   const router = useRouter();
 
-  const { selectedGroupMembers = [] } = useGroupStore();
+  const { selectedGroupMembers = [], selectedGroup } = useGroupStore();
+
   const selectedEmails = selectedGroupMembers.map(
     (member) => member.primaryEmail
   );
@@ -48,6 +50,11 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
     enabled: selectedGroupMembers.length > 0,
   });
 
+  const syncGroupMutation = useMutation({
+    mutationFn: (data: { payload: SyncGroupPayload }) =>
+      apiClient.syncGroupMembers(selectedGroup!.contactId, data.payload),
+  });
+
   useEffect(() => {
     if (participationQuery.isSuccess && groupMembersQuery.isSuccess) {
       const customers = participationQuery.data ?? [];
@@ -69,6 +76,49 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", value);
     router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const handleSync = (rowSelection: Record<string, boolean>) => {
+    const selectedRows = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key]
+    );
+
+    let groupCategory: GroupCategory;
+    let contactIds: string[];
+
+    switch (activeTab) {
+      case "no_eurospine_account":
+        groupCategory = "GroupCatA";
+        contactIds = data.noEurospineAccount
+          .filter((_, index) => selectedRows.includes(index.toString()))
+          .map((item) => item.eventsAir!.id);
+        break;
+      case "eurospine_account_without_participation":
+        groupCategory = "GroupCatB";
+        contactIds = data.eurospineAccountWithoutParticipation
+          .filter((_, index) => selectedRows.includes(index.toString()))
+          .map((item) => item.eventsAir!.id);
+        break;
+      case "eurospine_account_with_participation":
+        groupCategory = "GroupCatC";
+        contactIds = data.eurospineAccountWithParticipation
+          .filter((_, index) => selectedRows.includes(index.toString()))
+          .map((item) => item.eventsAir!.id);
+        break;
+      default:
+        groupCategory = "GroupCatA";
+        contactIds = data.noEurospineAccount
+          .filter((_, index) => selectedRows.includes(index.toString()))
+          .map((item) => item.eventsAir!.id);
+        break;
+    }
+
+    syncGroupMutation.mutate({
+      payload: {
+        groupCategory,
+        contactIds,
+      },
+    });
   };
 
   return (
@@ -97,28 +147,19 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
         </TabsList>
         <TabsContent value="no_eurospine_account">
           <NoEurospineAccountView
-            isLoading={
-              groupMembersQuery.isLoading || participationQuery.isLoading
-            }
-            onSubmit={() => {}}
+            onSubmit={handleSync}
             data={data.noEurospineAccount}
           />
         </TabsContent>
         <TabsContent value="eurospine_account_without_participation">
           <EurospineAccountWithoutParticipation
-            isLoading={
-              groupMembersQuery.isLoading || participationQuery.isLoading
-            }
-            onSubmit={() => {}}
+            onSubmit={handleSync}
             data={data.eurospineAccountWithoutParticipation}
           />
         </TabsContent>
         <TabsContent value="eurospine_account_with_participation">
           <EurospineAccountWithParticipation
-            isLoading={
-              groupMembersQuery.isLoading || participationQuery.isLoading
-            }
-            onSubmit={() => {}}
+            onSubmit={handleSync}
             data={data.eurospineAccountWithParticipation}
           />
         </TabsContent>

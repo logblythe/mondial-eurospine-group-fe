@@ -1,3 +1,4 @@
+import ApiClient from "@/api-client";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -7,29 +8,48 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useGroupStore } from "@/store/group-store";
 import { Person } from "@/type/group-type";
+import { useQuery } from "@tanstack/react-query";
 import { flexRender, useReactTable } from "@tanstack/react-table";
 import { getCoreRowModel } from "@tanstack/table-core";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { columns } from "./columns";
-// import { columns } from "./columns";
+
+const apiClient = new ApiClient();
 
 type Props = {
-  isLoading: boolean;
-  onSubmit: () => void;
+  onSubmit: (rowSelection: Record<string, boolean>) => void;
   data: Person[];
 };
 
 export const EurospineAccountWithoutParticipation = (props: Props) => {
-  const { isLoading, onSubmit, data } = props;
+  const { onSubmit, data } = props;
 
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+
+  const { selectedGroupId } = useGroupStore();
+
+  const groupSyncQuery = useQuery({
+    queryKey: ["groups", selectedGroupId, "status"],
+    queryFn: () => apiClient.getSyncStatus(selectedGroupId!),
+    enabled: !!selectedGroupId,
+    refetchInterval: 5000,
+  });
+
+  const status = groupSyncQuery?.data?.GroupCatB;
+
+  const handleClick = () => onSubmit(rowSelection);
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    state: {
+      rowSelection,
+    },
+    onRowSelectionChange: setRowSelection,
   });
 
   return (
@@ -81,9 +101,11 @@ export const EurospineAccountWithoutParticipation = (props: Props) => {
         </Table>
       </div>
       <div className="flex flex-row justify-end w-full px-2">
-        <Button disabled={isLoading}>
-          {isLoading ? <Loader2 className="w-4 h-4 animate-spin mr-4" /> : null}
-          Sync
+        <Button disabled={status === "IN_PROGRESS"} onClick={handleClick}>
+          {status === "IN_PROGRESS" ? (
+            <Loader2 className="w-4 h-4 animate-spin mr-4" />
+          ) : null}
+          {status === "IN_PROGRESS" ? "Syncing..." : "Sync"}
         </Button>
       </div>
     </div>
