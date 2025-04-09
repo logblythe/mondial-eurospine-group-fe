@@ -22,10 +22,11 @@ const apiClient = new ApiClient();
 type Props = {
   onSubmit: (rowSelection: Record<string, boolean>) => void;
   data: Person[];
+  isSyncing?: boolean;
 };
 
 export const EurospineAccountWithoutParticipation = (props: Props) => {
-  const { onSubmit, data } = props;
+  const { onSubmit, data = [], isSyncing } = props;
 
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
@@ -101,11 +102,14 @@ export const EurospineAccountWithoutParticipation = (props: Props) => {
         </Table>
       </div>
       <div className="flex flex-row justify-end w-full px-2">
-        <Button disabled={status === "IN_PROGRESS"} onClick={handleClick}>
-          {status === "IN_PROGRESS" ? (
+        <Button
+          disabled={status === "IN_PROGRESS" || isSyncing}
+          onClick={handleClick}
+        >
+          {status === "IN_PROGRESS" || isSyncing ? (
             <Loader2 className="w-4 h-4 animate-spin mr-4" />
           ) : null}
-          {status === "IN_PROGRESS" ? "Syncing..." : "Sync"}
+          {status === "IN_PROGRESS" || isSyncing ? "Syncing..." : "Sync"}
         </Button>
       </div>
     </div>

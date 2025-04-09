@@ -149,18 +149,21 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
           <NoEurospineAccountView
             onSubmit={handleSync}
             data={data.noEurospineAccount}
+            isSyncing={syncGroupMutation.isPending}
           />
         </TabsContent>
         <TabsContent value="eurospine_account_without_participation">
           <EurospineAccountWithoutParticipation
             onSubmit={handleSync}
             data={data.eurospineAccountWithoutParticipation}
+            isSyncing={syncGroupMutation.isPending}
           />
         </TabsContent>
         <TabsContent value="eurospine_account_with_participation">
           <EurospineAccountWithParticipation
             onSubmit={handleSync}
             data={data.eurospineAccountWithParticipation}
+            isSyncing={syncGroupMutation.isPending}
           />
         </TabsContent>
       </Tabs>
