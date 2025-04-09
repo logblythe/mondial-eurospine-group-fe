@@ -45,7 +45,7 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
   });
 
   const participationQuery = useQuery({
-    queryKey: ["groups", groupId, "participation"],
+    queryKey: ["groups", groupId, selectedGroupMembers, "participation"],
     queryFn: () => apiClient.getGroupCustomer(selectedEmails),
     enabled: selectedGroupMembers.length > 0,
   });
