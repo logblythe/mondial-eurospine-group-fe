@@ -22,7 +22,6 @@ export const columns: ColumnDef<GroupMember>[] = [
   },
   {
     accessorKey: "internalNumber",
-
     header: "Id",
   },
   {
@@ -40,5 +39,21 @@ export const columns: ColumnDef<GroupMember>[] = [
   {
     accessorKey: "country",
     header: "Country",
+  },
+  {
+    accessorKey: "remarks",
+    header: "Remarks",
+    cell: ({ row }) => {
+      const remarks = row.getValue("remarks") as string[];
+      return (
+        <ul className="flex flex-col">
+          {remarks.map((remark, index) => (
+            <li key={index} className="text-sm text-gray-500">
+              * {remark}
+            </li>
+          ))}
+        </ul>
+      );
+    },
   },
 ];
