@@ -32,6 +32,8 @@ export const NoEurospineAccountView = (props: Props) => {
 
   const status = groupSyncQuery?.data?.GroupCatA;
 
+  const isInProgress = status === "IN_PROGRESS";
+
   const handleClick = () => onSubmit(rowSelection);
 
   return (
@@ -41,17 +43,17 @@ export const NoEurospineAccountView = (props: Props) => {
         data={data}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
+        enableRowSelection={(row) => {
+          return Boolean(row.original.eventsAir?.primaryEmail);
+        }}
         enableMultiRowSelection
       />
       <div className="flex flex-row justify-end w-full px-2">
-        <Button
-          disabled={status === "IN_PROGRESS" || isSyncing}
-          onClick={handleClick}
-        >
-          {status === "IN_PROGRESS" || isSyncing ? (
+        <Button disabled={isInProgress || isSyncing} onClick={handleClick}>
+          {isInProgress || isSyncing ? (
             <Loader2 className="w-4 h-4 animate-spin mr-4" />
           ) : null}
-          {status === "IN_PROGRESS" || isSyncing ? "Syncing..." : "Sync"}
+          Create Account
         </Button>
       </div>
     </div>
