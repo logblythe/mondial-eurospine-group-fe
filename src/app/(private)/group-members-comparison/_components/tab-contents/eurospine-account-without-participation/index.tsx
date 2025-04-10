@@ -41,6 +41,8 @@ export const EurospineAccountWithoutParticipation = (props: Props) => {
 
   const status = groupSyncQuery?.data?.GroupCatB;
 
+  const isInProgress = status === "IN_PROGRESS";
+
   const handleClick = () => onSubmit(rowSelection);
 
   const table = useReactTable({
@@ -102,14 +104,11 @@ export const EurospineAccountWithoutParticipation = (props: Props) => {
         </Table>
       </div>
       <div className="flex flex-row justify-end w-full px-2">
-        <Button
-          disabled={status === "IN_PROGRESS" || isSyncing}
-          onClick={handleClick}
-        >
-          {status === "IN_PROGRESS" || isSyncing ? (
+        <Button disabled={isInProgress || isSyncing} onClick={handleClick}>
+          {isInProgress || isSyncing ? (
             <Loader2 className="w-4 h-4 animate-spin mr-4" />
           ) : null}
-          {status === "IN_PROGRESS" || isSyncing ? "Syncing..." : "Sync"}
+          Sync
         </Button>
       </div>
     </div>
