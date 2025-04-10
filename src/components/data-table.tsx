@@ -5,6 +5,7 @@ import {
   flexRender,
   getCoreRowModel,
   OnChangeFn,
+  Row,
   RowSelectionState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -24,7 +25,7 @@ interface DataTableProps<TData, TValue> {
   rowSelection?: any;
   onRowClick?: (data: TData) => void;
   onRowSelectionChange?: OnChangeFn<RowSelectionState> | undefined;
-  enableRowSelection?: boolean;
+  enableRowSelection?: boolean | ((row: Row<TData>) => boolean);
   enableMultiRowSelection?: boolean;
 }
 
