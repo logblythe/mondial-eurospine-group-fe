@@ -17,6 +17,7 @@ export const columns: ColumnDef<GroupMember>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
+        disabled={!row.getCanSelect()}
       />
     ),
   },

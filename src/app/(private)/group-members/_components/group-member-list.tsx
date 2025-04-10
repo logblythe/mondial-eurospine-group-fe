@@ -54,6 +54,9 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
         data={groupMembersQuery.data || []}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
+        enableRowSelection={(row) => {
+          return Boolean(row.original.primaryEmail);
+        }}
         enableMultiRowSelection
       />
       <div className="flex flex-row justify-end">
