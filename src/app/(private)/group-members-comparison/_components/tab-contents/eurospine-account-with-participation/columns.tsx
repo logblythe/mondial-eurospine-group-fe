@@ -1,8 +1,10 @@
 "use client";
 
+import { TooltipWrapper } from "@/components/TooltipWrapper";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Person } from "@/type/group-type";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { CircleCheck, CircleX } from "lucide-react";
 
 const columnHelper = createColumnHelper<Person>();
 
@@ -71,6 +73,20 @@ export const columns: ColumnDef<Person>[] = [
         id: "eurospine.country",
         cell: (info) => info.getValue(),
         header: () => <span>Country</span>,
+      }),
+      columnHelper.accessor((row) => row.eventsAir?.notes, {
+        id: "eventsAir.notes",
+        cell: (info) => {
+          if (info.getValue().length > 0) {
+            return (
+              <TooltipWrapper content={info.getValue()[0]}>
+                <CircleCheck className="text-green-500 w-4 h-4" />
+              </TooltipWrapper>
+            );
+          }
+          return <CircleX className="text-red-500 w-4 h-4" />;
+        },
+        header: () => <span>Synced</span>,
       }),
     ],
   }),

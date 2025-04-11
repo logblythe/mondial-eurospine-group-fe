@@ -13,6 +13,7 @@ export type GroupMember = {
   country?: string;
   registrationTypes: string[];
   remarks: string[];
+  notes: string[];
 };
 
 export type Participation = {
