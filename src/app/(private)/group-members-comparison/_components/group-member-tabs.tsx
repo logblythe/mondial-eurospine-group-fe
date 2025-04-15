@@ -83,6 +83,10 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
       (key) => rowSelection[key]
     );
 
+    if (selectedRows.length <= 0) {
+      return;
+    }
+
     let groupCategory: GroupCategory;
     let contactIds: string[];
 

@@ -2,6 +2,7 @@
 
 import ApiClient from "@/api-client/";
 import { DataTable } from "@/components/data-table";
+import EmptyList from "@/components/EmptyList";
 import { Button } from "@/components/ui/button";
 import { useGroupStore } from "@/store/group-store";
 import { useQuery } from "@tanstack/react-query";
@@ -23,6 +24,7 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
   const groupMembersQuery = useQuery({
     queryKey: ["groups", groupId, "members"],
     queryFn: () => apiClient.getGroupMembers(groupId),
+    enabled: Boolean(groupId),
   });
 
   useEffect(() => {
@@ -51,6 +53,7 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
       </div>
       <DataTable
         columns={columns}
+        emptyDataMessage={<EmptyList>No group members found</EmptyList>}
         data={groupMembersQuery.data || []}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
@@ -62,6 +65,7 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
       <div className="flex flex-row justify-end">
         <Button
           className="px-8"
+          disabled={Object.keys(rowSelection).length <= 0}
           onClick={() => {
             const selectedRows = Object.keys(rowSelection).filter(
               (key) => rowSelection[key]

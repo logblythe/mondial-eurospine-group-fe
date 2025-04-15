@@ -1,5 +1,6 @@
 import ApiClient from "@/api-client";
 import { DataTable } from "@/components/data-table";
+import EmptyList from "@/components/EmptyList";
 import { Button } from "@/components/ui/button";
 import { useGroupStore } from "@/store/group-store";
 import { Person } from "@/type/group-type";
@@ -41,6 +42,7 @@ export const NoEurospineAccountView = (props: Props) => {
       <DataTable
         columns={columns}
         data={data}
+        emptyDataMessage={<EmptyList>No group member found</EmptyList>}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         enableRowSelection={(row) => {

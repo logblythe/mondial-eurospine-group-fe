@@ -1,4 +1,5 @@
 import ApiClient from "@/api-client";
+import EmptyList from "@/components/EmptyList";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -119,10 +120,9 @@ export const EurospineAccountWithParticipation = (props: Props) => {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                />
+                <TableCell colSpan={10} className="h-24 text-center">
+                  <EmptyList>No group member found</EmptyList>
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

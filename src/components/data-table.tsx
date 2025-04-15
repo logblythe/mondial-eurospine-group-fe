@@ -22,6 +22,7 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  emptyDataMessage?: React.JSX.Element;
   rowSelection?: any;
   onRowClick?: (data: TData) => void;
   onRowSelectionChange?: OnChangeFn<RowSelectionState> | undefined;
@@ -32,6 +33,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  emptyDataMessage,
   rowSelection = {},
   onRowSelectionChange,
   onRowClick,
@@ -89,7 +91,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                {emptyDataMessage ? emptyDataMessage : "No Result"}
               </TableCell>
             </TableRow>
           )}

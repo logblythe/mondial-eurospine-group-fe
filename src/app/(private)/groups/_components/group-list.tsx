@@ -15,8 +15,8 @@ const apiClient = new ApiClient();
 const GroupList = () => {
   const router = useRouter();
 
-  const { selectedGroupId: selectedEventId, selectGroup: selectEvent } =
-    useGroupStore();
+  const { selectedGroupId, selectGroup } = useGroupStore();
+
   const [rowSelection, setRowSelection] = useState({});
 
   const { data = [], isLoading } = useQuery({
@@ -27,14 +27,14 @@ const GroupList = () => {
   useEffect(() => {
     if (data.length === 0) return;
     const index = data?.findIndex(
-      (event) => event.contactId === selectedEventId
+      (event) => event.contactId === selectedGroupId
     ) as number;
     setRowSelection({ [index]: true });
-  }, [data, selectedEventId]);
+  }, [data, selectedGroupId]);
 
-  const handleRowClick = (event: GroupType) => {
-    // selectEvent(event);
-    router.push(`/group-members?groupId=${event.contactId}`);
+  const handleRowClick = (group: GroupType) => {
+    selectGroup(group);
+    router.push(`/group-members?groupId=${group.contactId}`);
   };
 
   return (
