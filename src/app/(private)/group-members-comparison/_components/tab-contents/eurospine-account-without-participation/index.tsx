@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/table";
 import { useGroupStore } from "@/store/group-store";
 import { Person } from "@/type/group-type";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { flexRender, useReactTable } from "@tanstack/react-table";
 import { getCoreRowModel } from "@tanstack/table-core";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { columns } from "./columns";
 
 const apiClient = new ApiClient();
@@ -29,6 +29,8 @@ type Props = {
 export const EurospineAccountWithoutParticipation = (props: Props) => {
   const { onSubmit, data = [], isSyncing } = props;
 
+  const queryClient = useQueryClient();
+
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
   const { selectedGroupId } = useGroupStore();
@@ -37,10 +39,21 @@ export const EurospineAccountWithoutParticipation = (props: Props) => {
     queryKey: ["groups", selectedGroupId, "status"],
     queryFn: () => apiClient.getSyncStatus(selectedGroupId!),
     enabled: !!selectedGroupId,
-    refetchInterval: 5000,
+    refetchInterval: (data) => {
+      if (!data) return 5000; // keep polling if no data yet
+      return data.state.data?.GroupCatA === "IN_PROGRESS" ? 5000 : false; // stop if not in progress
+    },
   });
 
   const status = groupSyncQuery?.data?.GroupCatB;
+
+  useEffect(() => {
+    if (status === "COMPLETED") {
+      queryClient.invalidateQueries({
+        queryKey: ["groups", selectedGroupId, "members"],
+      });
+    }
+  }, [queryClient, selectedGroupId, status]);
 
   const isInProgress = status === "IN_PROGRESS";
 
