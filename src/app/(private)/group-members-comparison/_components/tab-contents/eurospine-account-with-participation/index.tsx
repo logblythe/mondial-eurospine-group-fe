@@ -37,7 +37,13 @@ export const EurospineAccountWithParticipation = (props: Props) => {
     queryKey: ["groups", selectedGroupId, "status"],
     queryFn: () => apiClient.getSyncStatus(selectedGroupId!),
     enabled: !!selectedGroupId,
-    refetchInterval: 5000,
+    refetchInterval: (data) => {
+      // const syncStatus = data?.state.data?.GroupCatA;
+      // if (syncStatus === "COMPLETED" || syncStatus === "FAILED") {
+      //   return false; // stop polling if completed or failed
+      // }
+      return 3000;
+    },
   });
 
   const status = groupSyncQuery?.data?.GroupCatC;

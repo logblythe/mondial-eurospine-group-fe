@@ -2,12 +2,13 @@
 
 import ApiClient, { SyncGroupPayload } from "@/api-client/";
 import { categorizeData } from "@/app/(private)/group-members-comparison/categorize-data";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGroupStore } from "@/store/group-store";
 import { GroupCategory } from "@/type/group-category";
 import { Person } from "@/type/group-type";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCcw } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EurospineAccountWithParticipation } from "./tab-contents/eurospine-account-with-participation";
@@ -132,9 +133,25 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             <span>Group Member Comparison</span>
           </h3>
-          {participationQuery.isLoading || groupMembersQuery.isLoading ? (
+          {participationQuery.isLoading ||
+          groupMembersQuery.isLoading ||
+          participationQuery.isFetching ||
+          groupMembersQuery.isFetching ? (
             <Loader2 className="w-4 h-4 animate-spin" />
-          ) : null}
+          ) : (
+            <Button
+              size={"sm"}
+              variant={"outline"}
+              className="h-8 rounded-xl"
+              onClick={() => {
+                groupMembersQuery.refetch();
+                participationQuery.refetch();
+              }}
+            >
+              <RefreshCcw className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
+          )}
         </div>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabValueChange}>
