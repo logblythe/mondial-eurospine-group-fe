@@ -11,10 +11,10 @@ export type SyncGroupPayload = {
 };
 
 class ApiClient {
-  private baseUrl: string =
-    "https://mondial-eurospine-group-uat-e62a85e3f3da.herokuapp.com/api/v1";
+  // private baseUrl: string =
+  //   "https://mondial-eurospine-group-uat-e62a85e3f3da.herokuapp.com/api/v1";
 
-  // private baseUrl: string = "http://localhost:8080/api/v1";
+  private baseUrl: string = "http://localhost:8080/api/v1";
 
   private httpClient: HttpClient;
 

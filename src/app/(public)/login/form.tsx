@@ -43,7 +43,8 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: (data: z.infer<typeof FormSchema>) => apiClient.login(data),
     onSuccess: (data) => {
-      addUser({ username: "admin", password: "1234" });
+      addUser({ token: data.token });
+      localStorage.setItem("token", data.token);
       router.push("/groups");
     },
     onError: () => {

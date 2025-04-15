@@ -5,8 +5,7 @@ export type TUser = {
 };
 
 export type AuthUser = {
-  username: string;
-  password: string;
+  token: string;
 };
 
 export type TLogin = {

@@ -12,10 +12,7 @@ export default class HttpClient {
     if (userFromStorage) {
       return JSON.parse(userFromStorage);
     }
-    return {
-      username: "",
-      password: "",
-    };
+    return { token: "" };
   }
 
   public async request<T>(
@@ -24,16 +21,10 @@ export default class HttpClient {
     headers: Record<string, string> = {},
     body: any = null
   ): Promise<T> {
-    const { username, password } = this.getUserInfo();
-
-    const encodeCredentials = (username: string, password: string) => {
-      return btoa(`${username}:${password}`);
-    };
-
-    const token = encodeCredentials(username, password);
+    const { token } = this.getUserInfo();
 
     const defaultHeaders: Record<string, string> = {
-      Authorization: `Basic ${token}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
       ...headers,
     };
@@ -65,16 +56,10 @@ export default class HttpClient {
     headers: Record<string, string> = {},
     body: any = null
   ): Promise<T> {
-    const { username, password } = this.getUserInfo();
-
-    const encodeCredentials = (username: string, password: string) => {
-      return btoa(`${username}:${password}`);
-    };
-
-    const token = encodeCredentials(username, password);
+    const { token } = this.getUserInfo();
 
     const defaultHeaders: Record<string, string> = {
-      Authorization: `Basic ${token}`,
+      Authorization: `Bearer ${token}`,
       ...headers,
     };
 
@@ -103,6 +88,8 @@ export default class HttpClient {
   ): Promise<T> {
     const defaultHeaders: Record<string, string> = {
       "Content-Type": "application/json",
+      credential: "include",
+      "Access-Control-Allow-Origin": "*",
       ...headers,
     };
 
@@ -133,16 +120,10 @@ export default class HttpClient {
     method: string = "GET",
     headers: Record<string, string> = {}
   ): Promise<void> {
-    const { username, password } = this.getUserInfo();
-
-    const encodeCredentials = (username: string, password: string) => {
-      return btoa(`${username}:${password}`);
-    };
-
-    const token = encodeCredentials(username, password);
+    const { token } = this.getUserInfo();
 
     const defaultHeaders: Record<string, string> = {
-      Authorization: `Basic ${token}`,
+      Authorization: `Bearer ${token}`,
       ...headers,
     };
 
