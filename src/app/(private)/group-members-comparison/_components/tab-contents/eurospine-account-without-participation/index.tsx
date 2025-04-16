@@ -86,7 +86,7 @@ export const EurospineAccountWithoutParticipation = (props: Props) => {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.original.eventsAir?.internalNumber}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

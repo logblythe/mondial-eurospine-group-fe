@@ -87,7 +87,7 @@ export const EurospineAccountWithParticipation = (props: Props) => {
               table.getRowModel().rows.map((row) => (
                 <>
                   <TableRow
-                    key={row.id}
+                    key={`${row.original.eventsAir?.internalNumber}-${row.original.eventsAir?.openId}`}
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -102,24 +102,34 @@ export const EurospineAccountWithParticipation = (props: Props) => {
                   <TableRow>
                     <TableCell />
                     <TableCell colSpan={4} className="p-0">
-                      <ul className="p-2 rounded-md ">
-                        {row.original.eventsAir?.registrationTypes.map(
-                          (type) => (
-                            <li key={type} className=" text-slate-500">
-                              {type}
-                            </li>
-                          )
-                        )}
-                      </ul>
+                      <div className="p-2 space-y-2">
+                        <p className="">Registrations:</p>
+                        <ul className="space-y-2">
+                          {row.original.eventsAir?.registrationTypes.map(
+                            (type) => (
+                              <li key={type} className=" text-slate-500">
+                                {type}
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
                     </TableCell>
                     <TableCell />
                     <TableCell colSpan={4} className=" p-0">
-                      <p className=" text-slate-500">
-                        RegGroup:{" "}
-                        <span>
-                          {row.original.eurospine?.participation.regGroup}
-                        </span>
-                      </p>
+                      <div className="grid grid-cols-2 gap-2 p-2">
+                        <p className=" text-slate-500 text-right">RegGroup: </p>
+                        <p>{row.original.eurospine?.participation.regGroup}</p>
+                        <p className=" text-slate-500 text-right">
+                          Mondial Registration Group:
+                        </p>
+                        <p>
+                          {
+                            row.original.eurospine?.participation
+                              .mondialRegistrationGroup
+                          }
+                        </p>
+                      </div>
                     </TableCell>
                   </TableRow>
                 </>
