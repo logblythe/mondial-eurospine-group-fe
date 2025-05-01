@@ -6,7 +6,7 @@ import { useGroupStore } from "@/store/group-store";
 import { Person } from "@/type/group-type";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { columns } from "./columns";
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
 
 const apiClient = new ApiClient();
 
-export const NoEurospineAccountView = (props: Props) => {
+export const NoEurospineAccountView = forwardRef((props: Props, ref) => {
   const { onSubmit, data = [], isSyncing } = props;
 
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
@@ -43,6 +43,12 @@ export const NoEurospineAccountView = (props: Props) => {
 
   const handleClick = () => onSubmit(rowSelection);
 
+  useImperativeHandle(ref, () => ({
+    resetRowSelection: () => {
+      setRowSelection({});
+    },
+  }));
+
   return (
     <div className="flex flex-col space-y-4">
       <DataTable
@@ -66,4 +72,6 @@ export const NoEurospineAccountView = (props: Props) => {
       </div>
     </div>
   );
-};
+});
+
+NoEurospineAccountView.displayName = "NoEurospineAccountView";

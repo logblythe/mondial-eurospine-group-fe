@@ -10,7 +10,7 @@ import { Person } from "@/type/group-type";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EurospineAccountWithParticipation } from "./tab-contents/eurospine-account-with-participation";
 import { EurospineAccountWithoutParticipation } from "./tab-contents/eurospine-account-without-participation";
 import { NoEurospineAccountView } from "./tab-contents/no-eurospine-account";
@@ -19,6 +19,8 @@ const apiClient = new ApiClient();
 
 const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
   const router = useRouter();
+
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   const { selectedGroupMembers = [], selectedGroup } = useGroupStore();
 
@@ -29,6 +31,14 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
   const searchParams = useSearchParams();
 
   const activeTab = searchParams.get("tab") ?? "no_eurospine_account";
+
+  const noEurospineAccountRef = useRef<{ resetRowSelection: () => void }>(null);
+  const eurospineAccountWithoutParticipationRef = useRef<{
+    resetRowSelection: () => void;
+  }>(null);
+  const eurospineWithParticipationRef = useRef<{
+    resetRowSelection: () => void;
+  }>(null);
 
   const [data, setData] = useState<{
     noEurospineAccount: Person[];
@@ -80,6 +90,7 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
   };
 
   const handleSync = (rowSelection: Record<string, boolean>) => {
+    setButtonClicked(true);
     const selectedRows = Object.keys(rowSelection).filter(
       (key) => rowSelection[key]
     );
@@ -118,12 +129,18 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
         break;
     }
 
-    syncGroupMutation.mutate({
-      payload: {
-        groupCategory,
-        contactIds,
-      },
-    });
+    syncGroupMutation
+      .mutateAsync({
+        payload: {
+          groupCategory,
+          contactIds,
+        },
+      })
+      .then(() => {
+        setTimeout(() => {
+          setButtonClicked(false);
+        }, 5000);
+      });
   };
 
   return (
@@ -146,6 +163,9 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
               onClick={() => {
                 groupMembersQuery.refetch();
                 participationQuery.refetch();
+                noEurospineAccountRef?.current?.resetRowSelection();
+                eurospineAccountWithoutParticipationRef?.current?.resetRowSelection();
+                eurospineWithParticipationRef?.current?.resetRowSelection();
               }}
             >
               <RefreshCcw className="w-4 h-4 mr-2" />
@@ -168,23 +188,47 @@ const GroupMemberTabs = ({ groupId }: { groupId: string }) => {
         </TabsList>
         <TabsContent value="no_eurospine_account">
           <NoEurospineAccountView
+            ref={noEurospineAccountRef}
             onSubmit={handleSync}
             data={data.noEurospineAccount}
-            isSyncing={syncGroupMutation.isPending}
+            isSyncing={
+              buttonClicked ||
+              syncGroupMutation.isPending ||
+              participationQuery.isLoading ||
+              groupMembersQuery.isLoading ||
+              participationQuery.isFetching ||
+              groupMembersQuery.isFetching
+            }
           />
         </TabsContent>
         <TabsContent value="eurospine_account_without_participation">
           <EurospineAccountWithoutParticipation
+            ref={eurospineAccountWithoutParticipationRef}
             onSubmit={handleSync}
             data={data.eurospineAccountWithoutParticipation}
-            isSyncing={syncGroupMutation.isPending}
+            isSyncing={
+              buttonClicked ||
+              syncGroupMutation.isPending ||
+              participationQuery.isLoading ||
+              groupMembersQuery.isLoading ||
+              participationQuery.isFetching ||
+              groupMembersQuery.isFetching
+            }
           />
         </TabsContent>
         <TabsContent value="eurospine_account_with_participation">
           <EurospineAccountWithParticipation
+            ref={eurospineWithParticipationRef}
             onSubmit={handleSync}
             data={data.eurospineAccountWithParticipation}
-            isSyncing={syncGroupMutation.isPending}
+            isSyncing={
+              buttonClicked ||
+              syncGroupMutation.isPending ||
+              participationQuery.isLoading ||
+              groupMembersQuery.isLoading ||
+              participationQuery.isFetching ||
+              groupMembersQuery.isFetching
+            }
           />
         </TabsContent>
       </Tabs>

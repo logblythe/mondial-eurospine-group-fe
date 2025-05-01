@@ -33,4 +33,8 @@ export const columns: ColumnDef<Person>[] = [
     accessorKey: "eventsAir.lastName",
     header: "Last Name",
   },
+  {
+    header: "Email",
+    accessorKey: "eventsAir.primaryEmail",
+  },
 ];
