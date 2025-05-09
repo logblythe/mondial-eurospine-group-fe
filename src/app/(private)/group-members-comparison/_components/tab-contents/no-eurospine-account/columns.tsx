@@ -20,6 +20,7 @@ export const columns: ColumnDef<Person>[] = [
         disabled={!row.getCanSelect()}
       />
     ),
+    enableSorting: false,
   },
   {
     accessorKey: "eventsAir.internalNumber",
@@ -28,6 +29,7 @@ export const columns: ColumnDef<Person>[] = [
   {
     accessorKey: "eventsAir.firstName",
     header: "First Name",
+    enableSorting: false,
   },
   {
     accessorKey: "eventsAir.lastName",
@@ -36,5 +38,6 @@ export const columns: ColumnDef<Person>[] = [
   {
     header: "Email",
     accessorKey: "eventsAir.primaryEmail",
+    enableSorting: false,
   },
 ];

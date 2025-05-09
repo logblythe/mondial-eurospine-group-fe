@@ -6,6 +6,7 @@ import EmptyList from "@/components/EmptyList";
 import { Button } from "@/components/ui/button";
 import { useGroupStore } from "@/store/group-store";
 import { useQuery } from "@tanstack/react-query";
+import { SortingState } from "@tanstack/react-table";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,6 +21,13 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
     useGroupStore();
 
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "internalNumber",
+      desc: false,
+    },
+  ]);
 
   const groupMembersQuery = useQuery({
     queryKey: ["groups", groupId, "members"],
@@ -55,6 +63,8 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
         columns={columns}
         emptyDataMessage={<EmptyList>No group members found</EmptyList>}
         data={groupMembersQuery.data || []}
+        sorting={sorting}
+        onSortingChange={setSorting}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         enableRowSelection={(row) => {

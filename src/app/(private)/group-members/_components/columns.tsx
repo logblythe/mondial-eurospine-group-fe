@@ -20,6 +20,7 @@ export const columns: ColumnDef<GroupMember>[] = [
         disabled={!row.getCanSelect()}
       />
     ),
+    enableSorting: false,
   },
   {
     accessorKey: "internalNumber",
@@ -28,6 +29,7 @@ export const columns: ColumnDef<GroupMember>[] = [
   {
     accessorKey: "firstName",
     header: "First Name",
+    enableSorting: false,
   },
   {
     accessorKey: "lastName",
@@ -36,14 +38,17 @@ export const columns: ColumnDef<GroupMember>[] = [
   {
     accessorKey: "primaryEmail",
     header: "Primary Email",
+    enableSorting: false,
   },
   {
     accessorKey: "country",
     header: "Country",
+    enableSorting: false,
   },
   {
     accessorKey: "remarks",
     header: "Remarks",
+    enableSorting: false,
     cell: ({ row }) => {
       const remarks = row.getValue("remarks") as string[];
       return (

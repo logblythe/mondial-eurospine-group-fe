@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useGroupStore } from "@/store/group-store";
 import { Person } from "@/type/group-type";
 import { useQuery } from "@tanstack/react-query";
+import { SortingState } from "@tanstack/react-table";
 import { Loader2 } from "lucide-react";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { columns } from "./columns";
@@ -21,6 +22,13 @@ export const NoEurospineAccountView = forwardRef((props: Props, ref) => {
   const { onSubmit, data = [], isSyncing } = props;
 
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "eventsAir.internalNumber",
+      desc: false,
+    },
+  ]);
 
   const { selectedGroupId } = useGroupStore();
 
@@ -61,6 +69,8 @@ export const NoEurospineAccountView = forwardRef((props: Props, ref) => {
           return Boolean(row.original.eventsAir?.primaryEmail);
         }}
         enableMultiRowSelection
+        sorting={sorting}
+        onSortingChange={setSorting}
       />
       <div className="flex flex-row justify-end w-full px-2">
         <Button disabled={isInProgress || isSyncing} onClick={handleClick}>
