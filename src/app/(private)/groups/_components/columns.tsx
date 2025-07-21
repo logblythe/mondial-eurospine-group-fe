@@ -19,9 +19,11 @@ export const columns: ColumnDef<GroupType>[] = [
   {
     accessorKey: "contactId",
     header: "Id",
+    enableSorting: true,
   },
   {
     accessorKey: "name",
     header: "Group Name",
+    enableSorting: true,
   },
 ];

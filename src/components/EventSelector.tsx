@@ -40,8 +40,6 @@ export function GroupSelector() {
         }
       }}
       value={selectedGroupId}
-      //TODO: conditionally disable the select if the pathname is
-      // disabled={RULES_DETAILS_ROUTE_REGEX.test(pathname)}
     >
       <SelectTrigger
         id="select-event-trigger"
@@ -52,13 +50,15 @@ export function GroupSelector() {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Events</SelectLabel>
-          {data?.map((group) => {
-            return (
-              <SelectItem key={group.contactId} value={group.contactId}>
-                {group.name}
-              </SelectItem>
-            );
-          })}
+          {data
+            ?.sort((a, b) => a.name.localeCompare(b.name))
+            .map((group) => {
+              return (
+                <SelectItem key={group.contactId} value={group.contactId}>
+                  {group.name}
+                </SelectItem>
+              );
+            })}
         </SelectGroup>
       </SelectContent>
     </Select>

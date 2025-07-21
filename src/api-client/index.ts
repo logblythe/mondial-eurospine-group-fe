@@ -80,6 +80,10 @@ class ApiClient {
       `${apiUrls.groups.syncStatus}`.replace(":id", groupId)
     );
   }
+
+  public async getRefreshCache(): Promise<void> {
+    return this.httpClient.request<void>(`${apiUrls.groups.refresh_cache}`);
+  }
 }
 
 export default ApiClient;

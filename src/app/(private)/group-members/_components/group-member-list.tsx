@@ -50,13 +50,34 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
   return (
     <div className="container mx-auto py-10 space-y-2">
       <div className="flex flex-row  justify-between items-end">
-        <div className="flex flex-row space-x-4 items-center">
+        <div className="flex flex-row space-x-4 items-center  w-full">
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             <span>Group Members</span>
           </h3>
           {groupMembersQuery.isLoading ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : null}
+          <div className="flex flex-row justify-end w-full flex-1 ">
+            <Button
+              className="px-8"
+              disabled={Object.keys(rowSelection).length <= 0}
+              onClick={() => {
+                const selectedRows = Object.keys(rowSelection).filter(
+                  (key) => rowSelection[key]
+                );
+                const selectedGroupMembers = selectedRows.map((row) => {
+                  const index = parseInt(row);
+                  return groupMembersQuery.data![index];
+                });
+                setSelectedGroupMembers(selectedGroupMembers);
+                router.push(
+                  `/group-members-comparison?groupId=${groupId}&tab=no_eurospine_account`
+                );
+              }}
+            >
+              Proceed
+            </Button>
+          </div>
         </div>
       </div>
       <DataTable
@@ -72,27 +93,6 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
         }}
         enableMultiRowSelection
       />
-      <div className="flex flex-row justify-end">
-        <Button
-          className="px-8"
-          disabled={Object.keys(rowSelection).length <= 0}
-          onClick={() => {
-            const selectedRows = Object.keys(rowSelection).filter(
-              (key) => rowSelection[key]
-            );
-            const selectedGroupMembers = selectedRows.map((row) => {
-              const index = parseInt(row);
-              return groupMembersQuery.data![index];
-            });
-            setSelectedGroupMembers(selectedGroupMembers);
-            router.push(
-              `/group-members-comparison?groupId=${groupId}&tab=no_eurospine_account`
-            );
-          }}
-        >
-          Proceed
-        </Button>
-      </div>
     </div>
   );
 };

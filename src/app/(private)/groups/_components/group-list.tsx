@@ -5,6 +5,7 @@ import { DataTable } from "@/components/data-table";
 import { useGroupStore } from "@/store/group-store";
 import { GroupType } from "@/type/group-type";
 import { useQuery } from "@tanstack/react-query";
+import { SortingState } from "@tanstack/react-table";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,6 +19,17 @@ const GroupList = () => {
   const { selectedGroupId, selectGroup } = useGroupStore();
 
   const [rowSelection, setRowSelection] = useState({});
+
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "contactId",
+      desc: false,
+    },
+    {
+      id: "name",
+      desc: false,
+    },
+  ]);
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["groups"],
@@ -50,6 +62,8 @@ const GroupList = () => {
       <DataTable
         columns={columns}
         data={data}
+        sorting={sorting}
+        onSortingChange={setSorting}
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         onRowClick={handleRowClick}
