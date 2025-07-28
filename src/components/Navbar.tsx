@@ -3,7 +3,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import classNames from "clsx";
 import { Menu, RefreshCcw } from "lucide-react";
-import { GroupSelector } from "./EventSelector";
+import { GroupSelector } from "./group-selector";
 import { Button } from "./ui/button";
 
 type Props = {

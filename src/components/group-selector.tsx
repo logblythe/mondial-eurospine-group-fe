@@ -36,7 +36,7 @@ export function GroupSelector() {
           selectGroup(group);
           const params = new URLSearchParams(searchParams);
           params.set("groupId", group.contactId); // Replace eventId
-          router.push(`${pathname}?${params.toString()}`);
+          router.push(`/group-members?${params.toString()}`);
         }
       }}
       value={selectedGroupId}
