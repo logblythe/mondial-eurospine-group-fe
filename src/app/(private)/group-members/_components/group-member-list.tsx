@@ -89,6 +89,9 @@ const GroupMembersList = ({ groupId }: { groupId: string }) => {
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
         enableRowSelection={(row) => {
+          if (row.original.remarks.length > 0) {
+            return false;
+          }
           return Boolean(row.original.primaryEmail);
         }}
         enableMultiRowSelection
