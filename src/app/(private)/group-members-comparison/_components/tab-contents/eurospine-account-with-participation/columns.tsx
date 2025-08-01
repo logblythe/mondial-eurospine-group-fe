@@ -37,6 +37,7 @@ export const columns: ColumnDef<Person>[] = [
         id: "eventsAir.firstName",
         cell: (info) => info.getValue(),
         header: () => <span>First Name</span>,
+        enableSorting: false,
       }),
       columnHelper.accessor((row) => row.eventsAir?.lastName, {
         id: "eventsAir.lastName",
@@ -47,6 +48,7 @@ export const columns: ColumnDef<Person>[] = [
         id: "eventsAir.country",
         cell: (info) => info.getValue(),
         header: () => <span>Country</span>,
+        enableSorting: false,
       }),
     ],
   }),
@@ -58,21 +60,25 @@ export const columns: ColumnDef<Person>[] = [
         id: "eurospine.id",
         cell: (info) => info.getValue(),
         header: () => <span>Id</span>,
+        enableSorting: false,
       }),
       columnHelper.accessor((row) => row.eurospine?.firstName, {
         id: "eurospine.firstName",
         cell: (info) => info.getValue(),
         header: () => <span>First Name</span>,
+        enableSorting: false,
       }),
       columnHelper.accessor((row) => row.eurospine?.lastName, {
         id: "eurospine.lastName",
         cell: (info) => info.getValue(),
         header: () => <span>Last Name</span>,
+        enableSorting: false,
       }),
       columnHelper.accessor((row) => row.eurospine?.country, {
         id: "eurospine.country",
         cell: (info) => info.getValue(),
         header: () => <span>Country</span>,
+        enableSorting: false,
       }),
       columnHelper.accessor((row) => row.eventsAir?.notes, {
         id: "eventsAir.notes",
@@ -87,6 +93,7 @@ export const columns: ColumnDef<Person>[] = [
           return <CircleX className="text-red-500 w-4 h-4" />;
         },
         header: () => <span>Synced</span>,
+        enableSorting: false,
       }),
     ],
   }),

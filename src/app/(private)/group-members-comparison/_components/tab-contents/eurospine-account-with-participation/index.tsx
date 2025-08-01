@@ -13,8 +13,12 @@ import { useGroupStore } from "@/store/group-store";
 import { Person } from "@/type/group-type";
 import { useQuery } from "@tanstack/react-query";
 import { flexRender, useReactTable } from "@tanstack/react-table";
-import { getCoreRowModel } from "@tanstack/table-core";
-import { Loader2 } from "lucide-react";
+import {
+  getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
+} from "@tanstack/table-core";
+import { ArrowDownIcon, ArrowUpIcon, Loader2 } from "lucide-react";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { columns } from "./columns";
 
@@ -33,6 +37,13 @@ export const EurospineAccountWithParticipation = forwardRef(
     const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
       {}
     );
+
+    const [sorting, setSorting] = useState<SortingState>([
+      {
+        id: "eventsAir.id",
+        desc: false,
+      },
+    ]);
 
     const { selectedGroupId } = useGroupStore();
 
@@ -59,10 +70,13 @@ export const EurospineAccountWithParticipation = forwardRef(
       data,
       columns,
       getCoreRowModel: getCoreRowModel(),
+      getSortedRowModel: getSortedRowModel(),
       state: {
         rowSelection,
+        sorting,
       },
       onRowSelectionChange: setRowSelection,
+      onSortingChange: setSorting,
     });
 
     useImperativeHandle(ref, () => ({
@@ -79,13 +93,30 @@ export const EurospineAccountWithParticipation = forwardRef(
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className={
+                        header.column.getCanSort()
+                          ? "cursor-pointer select-none"
+                          : ""
+                      }
+                    >
+                      {header.isPlaceholder ? null : (
+                        <div
+                          onClick={header.column.getToggleSortingHandler()}
+                          className="flex items-center gap-1"
+                        >
+                          {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
+                          {{
+                            asc: <ArrowDownIcon className="w-4 h-4" />,
+                            desc: <ArrowUpIcon className="w-4 h-4" />,
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                      )}
                     </TableHead>
                   ))}
                 </TableRow>

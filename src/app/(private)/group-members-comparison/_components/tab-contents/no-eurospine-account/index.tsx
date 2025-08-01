@@ -23,12 +23,7 @@ export const NoEurospineAccountView = forwardRef((props: Props, ref) => {
 
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
-  const [sorting, setSorting] = useState<SortingState>([
-    {
-      id: "eventsAir.internalNumber",
-      desc: false,
-    },
-  ]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const { selectedGroupId } = useGroupStore();
 

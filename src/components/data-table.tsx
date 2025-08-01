@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MoveDown, MoveUp } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -69,55 +69,33 @@ export function DataTable<TData, TValue>({
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead
-                    key={header.id}
-                    className={
-                      header.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : ""
-                    }
-                    onClick={header.column.getToggleSortingHandler()}
-                    title={
-                      header.column.getCanSort()
-                        ? header.column.getNextSortingOrder() === "asc"
-                          ? "Sort ascending"
-                          : header.column.getNextSortingOrder() === "desc"
-                          ? "Sort descending"
-                          : "Clear sort"
-                        : undefined
-                    }
-                  >
-                    <div className="flex items-center gap-1">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                      {header.column.getCanSort() ? (
-                        <div className="flex flex-row ">
-                          <MoveDown
-                            className={`h-4 w-4 ${
-                              header.column.getIsSorted() === "asc"
-                                ? "text-primary"
-                                : "text-gray-400"
-                            }`}
-                          />
-                          <MoveUp
-                            className={`h-4 w-4 ${
-                              header.column.getIsSorted() === "desc"
-                                ? "text-primary"
-                                : "text-gray-400"
-                            }`}
-                          />
-                        </div>
-                      ) : null}
+              {headerGroup.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  className={
+                    header.column.getCanSort()
+                      ? "cursor-pointer select-none"
+                      : ""
+                  }
+                >
+                  {header.isPlaceholder ? null : (
+                    <div
+                      onClick={header.column.getToggleSortingHandler()}
+                      className="flex items-center gap-1"
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {{
+                        asc: <ArrowDownIcon className="w-4 h-4" />,
+                        desc: <ArrowUpIcon className="w-4 h-4" />,
+                      }[header.column.getIsSorted() as string] ?? null}
                     </div>
-                  </TableHead>
-                );
-              })}
+                  )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
