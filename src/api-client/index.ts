@@ -1,4 +1,5 @@
 import { AuthUser } from "@/type/auth";
+import { PaginatedExceptionLogs } from "@/type/exception-logs";
 import { GroupCategory } from "@/type/group-category";
 import { GroupSyncStatus } from "@/type/group-sync-status";
 import { Customer, GroupMember, GroupType } from "@/type/group-type";
@@ -83,6 +84,12 @@ class ApiClient {
 
   public async getRefreshCache(): Promise<void> {
     return this.httpClient.request<void>(`${apiUrls.groups.refresh_cache}`);
+  }
+
+  public async getExceptionLogs(): Promise<PaginatedExceptionLogs> {
+    return this.httpClient.request<PaginatedExceptionLogs>(
+      `${apiUrls.exceptionLogs}`
+    );
   }
 }
 

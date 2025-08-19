@@ -3,6 +3,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import classNames from "clsx";
 import { Menu, RefreshCcw } from "lucide-react";
+import ExceptionLogSheet from "./exception-logs-sheet";
 import { GroupSelector } from "./group-selector";
 import { Button } from "./ui/button";
 
@@ -40,6 +41,8 @@ const Navbar = (props: Props) => {
       <p className="font-bold text-xs md:text-sm">Group Portal</p>
       <div className="flex-grow"></div>
       <GroupSelector />
+      <ExceptionLogSheet />
+
       <Button
         variant="outline"
         size="icon"

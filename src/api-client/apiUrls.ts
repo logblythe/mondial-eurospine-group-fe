@@ -8,4 +8,5 @@ export const apiUrls = {
     syncStatus: "/groups/sync/:id/status",
     refresh_cache: "/groups/refresh-cache",
   },
+  exceptionLogs: "/logs?pageNumber=0&pageSize=1000",
 };
