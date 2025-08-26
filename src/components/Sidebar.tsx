@@ -1,12 +1,15 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
+import ApiClient from "@/api-client";
 import useNavItems from "@/hooks/useNavItems";
 import { useUser } from "@/hooks/useUser";
+import { useQuery } from "@tanstack/react-query";
 import classNames from "clsx";
 import { ChevronLeftCircleIcon, ChevronRightCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NavItem, defaultNavItems } from "./defaultNavItems";
+import { Progress } from "./ui/progress";
 
 type Props = {
   collapsed: boolean;
@@ -14,6 +17,8 @@ type Props = {
   setCollapsed(collapsed: boolean): void;
   shown: boolean;
 };
+
+const apiClient = new ApiClient();
 
 const Sidebar = ({
   collapsed,
@@ -27,6 +32,26 @@ const Sidebar = ({
   const { removeUser, user } = useUser();
 
   const Icon = collapsed ? ChevronRightCircleIcon : ChevronLeftCircleIcon;
+
+  const groupStatusQuery = useQuery({
+    queryKey: ["groups", "status"],
+    queryFn: async () => {
+      const groupStatus = await apiClient.getGlobalSyncStatus();
+      return groupStatus;
+    },
+    refetchInterval: 5000,
+  });
+
+  const isLoading = groupStatusQuery.isLoading;
+
+  const groupStatus = groupStatusQuery.data;
+
+  const isGroupStatusComplete = () => {
+    if (!groupStatus) return true;
+    return Object.values(groupStatus).every(
+      (status) => status !== "IN_PROGRESS"
+    );
+  };
 
   return (
     <div
@@ -98,6 +123,9 @@ const Sidebar = ({
             })}
           </ul>
         </nav>
+        {isLoading || !isGroupStatusComplete() ? (
+          <Progress value={30} className="h-2" />
+        ) : null}
         <div
           className={classNames({
             "grid place-content-stretch p-4 ": true,

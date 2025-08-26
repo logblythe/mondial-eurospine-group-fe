@@ -82,6 +82,12 @@ class ApiClient {
     );
   }
 
+  public async getGlobalSyncStatus(): Promise<GroupSyncStatus> {
+    return this.httpClient.request<GroupSyncStatus>(
+      `${apiUrls.groups.globalSyncStatus}`
+    );
+  }
+
   public async getRefreshCache(): Promise<void> {
     return this.httpClient.request<void>(`${apiUrls.groups.refresh_cache}`);
   }
